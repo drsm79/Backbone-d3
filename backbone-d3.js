@@ -1,14 +1,16 @@
 (function(){
   Backbone.d3 = {
-    PlotView = Backbone.View.extend(
+    PlotView: Backbone.View.extend(
       {
-        this.collection.bind('change', this.redraw),
-        this.collection.bind('add', this.redraw),
-        this.collection.bind('remove', this.redraw),
-        this.collection.bind('reset', this.draw),
-        initialize: function(collection, settings){
-          this.collection = collection;
+        initialize: function(collection, settings) {
+          _.bindAll(this);
           this.settings = settings;
+          this.collection = collection;
+          this.collection.bind('change', this.redraw);
+          this.collection.bind('add', this.redraw);
+          this.collection.bind('remove', this.redraw);
+          this.collection.bind('reset', this.draw);
+          this.collection.fetch();
         },
         draw: function() {
           // Draw the plot
@@ -27,16 +29,17 @@
         }
       }
     ),
-
-    PlotCollection = Backbone.Collection.extend(
+    PlotCollection: Backbone.Collection.extend(
       {
-        initialize: function(collection, plottype){
+        initialize: function(models, settings, plottype) {
+          _.bindAll(this);
+          this.settings = settings;
           this.plottype = plottype;
-          this.reset(collection);
+          this.reset(models);
         },
         plotdata: function(){
           var data = [];
-  				this.collection.forEach(function(datapoint) {
+				  this.forEach(function(datapoint) {
   				    data.push(datapoint.get('value'));
   				  }
 				  )
@@ -45,4 +48,4 @@
       }
     )
   }
-)
+})();
