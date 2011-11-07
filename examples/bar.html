@@ -11,39 +11,40 @@
     <script src="../backbone-d3.js" type="text/javascript"> </script>
 
     <script type="text/javascript">
+      $(function() {
+        var DataPoint = Backbone.Model.extend({
+          initialize: function(point) {
+            this.set({
+              x: point.x,
+              y: point.y
+            });
+          }
+        });
 
-  		var DataPoint = Backbone.Model.extend({
-        initialize: function(point) {
-          this.set({
-            x: point.x,
-            y: point.y
-          });
-        }
+        var DataSeries = Backbone.d3.PlotCollection.extend({
+          model : DataPoint,
+          url : "bardata.json",
+          plotdata: function(){
+            var data = [];
+            this.forEach(function(datapoint) {
+                data.push(datapoint.get('y'));
+              }
+            )
+            return data;
+          }
+        });
+
+        var series = new DataSeries();
+        series.add([
+          new DataPoint({x:1, y:2}),
+          new DataPoint({x:2, y:4}),
+          new DataPoint({x:3, y:6}),
+          new DataPoint({x:4, y:4}),
+          new DataPoint({x:5, y:2})
+        ]);
+        var plot = new Backbone.d3.PlotView(series);
+        plot.draw();
       });
-
-      var DataSeries = Backbone.d3.PlotCollection.extend({
-        model : DataPoint,
-        url : "bardata.json",
-        plotdata: function(){
-          var data = [];
-				  this.forEach(function(datapoint) {
-  				    data.push(datapoint.get('y'));
-  				  }
-				  )
-				  return data;
-        }
-      });
-
-      var series = new DataSeries();
-      series.add([
-        new DataPoint({x:1, y:2}),
-        new DataPoint({x:2, y:4}),
-        new DataPoint({x:3, y:6}),
-        new DataPoint({x:4, y:4}),
-        new DataPoint({x:5, y:2})
-      ]);
-      var plot = new Backbone.d3.PlotView(series);
-      plot.draw();
 
     </script>
   </head>
