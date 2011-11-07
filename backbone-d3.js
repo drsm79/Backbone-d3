@@ -64,7 +64,7 @@
         initialize: function(models, settings, plottype) {
           _.bindAll(this);
           this.settings = settings;
-          this.plottype = plottype;
+          this.plottype = plottype || this.plottype;
           this.reset(models);
         },
         plotdata: function(){
