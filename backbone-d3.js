@@ -82,9 +82,9 @@
 								.data(data)
 							.enter().append("svg:rect")
 								.attr("x", function(d, i) { return x(i) - .5; })
-								.attr("y", function(d) { return h - y(d.y) - .5; })
+								.attr("y", function(d) { return h - y(d) - .5; })
 								.attr("width", w)
-								.attr("height", function(d) { return y(d.y); });
+								.attr("height", function(d) { return y(d); });
 
 						chart.append("svg:line")
 							.attr("x1", 0)
@@ -99,8 +99,8 @@
 							.data(data)
 							.transition()
 							.duration(1000)
-							.attr("y", function(d) { return h - y(d.value) - .5; })
-							.attr("height", function(d) { return y(d.value); });
+							.attr("y", function(d) { return h - y(d) - .5; })
+							.attr("height", function(d) { return y(d); });
 					}
         }	// ,
         	// 		caption: function(){
