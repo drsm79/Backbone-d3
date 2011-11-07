@@ -1,0 +1,42 @@
+line { stroke: black; }
+text {
+	font-family: LeagueGothicRegular, Helvetica Neue, Helvetica, Arial;
+	font-size: 9pt;
+}
+body {
+	font-family: LeagueGothicRegular, Helvetica Neue, Helvetica, Arial;
+	margin:1em, 5em;
+	padding:1em, 5em;
+}
+p {
+	margin:1em, 5em;
+	padding:1em, 5em;
+	font-family: Helvetica Neue, Helvetica, Arial;
+	font-weight: 200;
+}
+h1, h2, h3, h4, h5, h6 {
+	font-family: Helvetica Neue, Helvetica, Arial;
+	font-weight: 100;
+}
+h1 {
+	font-size: 3em;
+}
+h2 {
+	font-size: 2em;
+}
+h3 {
+	font-size: 1.8em;
+}
+h4 {
+	font-size: 1.6em;
+}
+h5 {
+	font-size: 1.4em;
+}
+h6 {
+	font-size: 1.2em;
+}
+#content {
+	margin: 0 auto;
+	width: 700px;
+}
