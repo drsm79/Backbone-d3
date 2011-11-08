@@ -44,7 +44,7 @@
 
         var series1 = new DataSeries();
 
-        var plot1 = new Backbone.d3.PlotView(series1, {div:'#plot1'});
+        var plot1 = Backbone.d3.getView(series1, {div:'#plot1'});
         series1.reset([
           new DataPoint({x:1, y:6, id:1}),
           new DataPoint({x:2, y:4, id:2}),
@@ -63,7 +63,7 @@
         var series2 = new DataSeries();
         series2.scrolling = true;
 
-        var plot2 = new Backbone.d3.PlotView(series2, {div:'#plot2'});
+        var plot2 = Backbone.d3.getView(series2, {div:'#plot2'});
         series2.reset([
           new DataPoint({x:1, y:5, id:1}),
           new DataPoint({x:2, y:4, id:2}),
