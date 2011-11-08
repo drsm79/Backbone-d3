@@ -76,7 +76,7 @@ var PlotView = Backbone.View.extend({
 		      .style("fill",
 		      function(d, i) { return z(i); });
 		    } else {
-		      var svg = d3.select("#plot").selectAll("svg");
+		      var svg = this.div.selectAll("svg");
 		      svg.data([data]);
 		      var pie = svg.selectAll("path");
 		      pie.data(d3.layout.pie());
@@ -176,7 +176,7 @@ var PlotView = Backbone.View.extend({
       initialize: function(models, plottype, settings) {
         _.bindAll(this);
         this.settings = settings || {};
-        this.plottype = plottype || "bar";
+        this.plottype = plottype || this.plottype || "bar";
         this.scrolling = this.settings.scrolling || false;
         this.reset(models);
       },
