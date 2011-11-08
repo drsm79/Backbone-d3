@@ -9,7 +9,7 @@ body {
 a { color: #918c7a; }
 pre { background: #242424; color: #fff; padding: 15px;}
 hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-line { stroke: black; }
+line { stroke: #484338; }
 #plot1 .chart rect {
 	fill: steelblue;
 }
