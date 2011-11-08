@@ -10,9 +10,9 @@ collection with a default plotdata() function and plottype variable. Extend this
 a normal collection if you do not need to do anything special with your data to plot it. 
  
 ### Streaming
-As your collection changes so should your visualisation. The change trigger is bound to the redraw 
-method of the plot view. This triggers a d3 transformation, updating the plot in place with your 
-new data. 
+As your collection changes so should your visualisation. The change/add/remove triggers are bound 
+to the redraw method of the plot view (reset redraws the visualisation from scratch. This triggers 
+a d3 transformation, updating the plot in place with your new data. Tasty!
 
 
 ## The plot views
