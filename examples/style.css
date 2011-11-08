@@ -1,3 +1,20 @@
+body {
+  margin-top: 1.0em;
+  background-color: #f4f3ef;
+  font-family: Helvetica Neue, Helvetica, Arial, FreeSans, san-serif;
+  color: #484338;
+	margin:1em, 5em;
+	padding:1em, 5em;
+}
+#container {
+  margin: 0 auto;
+  width: 700px;
+}
+
+a { color: #918c7a; }
+pre { background: #242424; color: #fff; padding: 15px;}
+hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+
 line { stroke: black; }
 #plot1 .chart rect {
 	fill: steelblue;
@@ -13,13 +30,8 @@ line { stroke: black; }
 	margin: 1px;
 }
 text {
-	font-family: LeagueGothicRegular, Helvetica Neue, Helvetica, Arial;
+	font-family: Helvetica Neue, Helvetica, Arial;
 	font-size: 9pt;
-}
-body {
-	font-family: LeagueGothicRegular, Helvetica Neue, Helvetica, Arial;
-	margin:1em, 5em;
-	padding:1em, 5em;
 }
 p {
 	margin:1em, 5em;
@@ -28,12 +40,16 @@ p {
 	font-weight: 200;
 }
 h1, h2, h3, h4, h5, h6 {
+	color: #918c7a;
 	font-family: Helvetica Neue, Helvetica, Arial;
-	font-weight: 100;
+	font-weight: 200;
 }
 h1 {
 	font-size: 3em;
+	font-weight: 100;
 }
+h1 a { text-decoration: none }
+h1 .small { font-size: 0.4em; }
 h2 {
 	font-size: 2em;
 }
