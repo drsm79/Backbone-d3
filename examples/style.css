@@ -1,4 +1,11 @@
 line { stroke: black; }
+.chart rect {
+	font: 10px sans-serif;
+	fill: steelblue;
+	text-align: right;
+	padding: 3px;
+	margin: 1px;
+}
 text {
 	font-family: LeagueGothicRegular, Helvetica Neue, Helvetica, Arial;
 	font-size: 9pt;

@@ -15,6 +15,7 @@
         var DataPoint = Backbone.Model.extend({
           initialize: function(point) {
             this.set({
+              id: point.id,
               x: point.x,
               y: point.y
             });
@@ -31,19 +32,34 @@
               }
             )
             return data;
+          },
+          fetch: function(){
+            // No op
+            console.log('fetching is a no op in this example');
           }
         });
 
         var series = new DataSeries();
-        series.add([
-          new DataPoint({x:1, y:2}),
-          new DataPoint({x:2, y:4}),
-          new DataPoint({x:3, y:6}),
-          new DataPoint({x:4, y:4}),
-          new DataPoint({x:5, y:2})
-        ]);
+
         var plot = new Backbone.d3.PlotView(series);
-        plot.draw();
+        series.reset([
+          new DataPoint({x:1, y:6, id:1}),
+          new DataPoint({x:2, y:4, id:2}),
+          new DataPoint({x:3, y:2, id:3}),
+          new DataPoint({x:4, y:4, id:4}),
+          new DataPoint({x:5, y:6, id:5})
+        ]);
+        // evolve the dataset
+        _.each(_.range(1,6), function(i, ii, l) {
+          setTimeout(function() {
+            console.log(plot.collection.toJSON());
+    				console.log(plot.collection.length);
+    				m = plot.collection.get(i);
+    				console.log(m);
+    				m.set({y:2*i});
+    				console.log(m);
+          }, i * 1000);
+        })
       });
 
     </script>
