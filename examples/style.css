@@ -6,15 +6,9 @@ body {
 	margin:1em, 5em;
 	padding:1em, 5em;
 }
-#container {
-  margin: 0 auto;
-  width: 700px;
-}
-
 a { color: #918c7a; }
 pre { background: #242424; color: #fff; padding: 15px;}
 hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-
 line { stroke: black; }
 #plot1 .chart rect {
 	fill: steelblue;
@@ -65,7 +59,7 @@ h5 {
 h6 {
 	font-size: 1.2em;
 }
-#content {
-	margin: 0 auto;
-	width: 700px;
+#container {
+  margin: 0 auto;
+  width: 700px;
 }
