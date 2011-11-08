@@ -25,13 +25,16 @@
         var DataSeries = Backbone.d3.PlotCollection.extend({
           model : DataPoint,
           url : "bardata.json",
+          // Needed for scolling plots
+          size: 5,
           plotdata: function(){
             var data = [];
             this.forEach(function(datapoint) {
-                data.push(datapoint.get('y'));
+                data.push({x:datapoint.get('x'), y:datapoint.get('y')});
               }
             )
-            return data;
+            // Needed for scolling plots
+            return _.last(data, this.size);
           },
           fetch: function(){
             // No op
@@ -39,10 +42,10 @@
           }
         });
 
-        var series = new DataSeries();
+        var series1 = new DataSeries();
 
-        var plot = new Backbone.d3.PlotView(series);
-        series.reset([
+        var plot1 = new Backbone.d3.PlotView(series1, {div:'#plot1'});
+        series1.reset([
           new DataPoint({x:1, y:6, id:1}),
           new DataPoint({x:2, y:4, id:2}),
           new DataPoint({x:3, y:2, id:3}),
@@ -52,12 +55,26 @@
         // evolve the dataset
         _.each(_.range(1,6), function(i, ii, l) {
           setTimeout(function() {
-            console.log(plot.collection.toJSON());
-    				console.log(plot.collection.length);
-    				m = plot.collection.get(i);
-    				console.log(m);
-    				m.set({y:2*i});
-    				console.log(m);
+                   m = plot1.collection.get(i);
+                   m.set({y:2*i});
+          }, i * 1000);
+        })
+
+        var series2 = new DataSeries();
+        series2.scrolling = true;
+
+        var plot2 = new Backbone.d3.PlotView(series2, {div:'#plot2'});
+        series2.reset([
+          new DataPoint({x:1, y:5, id:1}),
+          new DataPoint({x:2, y:4, id:2}),
+          new DataPoint({x:3, y:3, id:3}),
+          new DataPoint({x:4, y:2, id:4}),
+          new DataPoint({x:5, y:1, id:5})
+        ]);
+        // evolve the dataset
+        _.each(_.range(1,6), function(i, ii, l) {
+          setTimeout(function() {
+                   plot2.collection.add(new DataPoint({x:i+5, y:i*2, id:i}));
           }, i * 1000);
         })
       });
@@ -73,7 +90,8 @@
         x-axis data is fixed. Scrolling bar charts are good for time series
         data - new data will appear on the right hand side and old will
         "drop-off" on the left.</p>
-      <div id="plot"></div>
+      <p>Static plot:<div id="plot1"></div></p>
+      <p>Scrolling plot:<div id="plot2"></div></p>
     </div>
   </body>
 </html>

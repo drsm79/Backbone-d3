@@ -1,7 +1,13 @@
 line { stroke: black; }
+#plot1 .chart rect {
+	fill: steelblue;
+}
+#plot2 .chart rect {
+	fill: orange;
+}
+
 .chart rect {
 	font: 10px sans-serif;
-	fill: steelblue;
 	text-align: right;
 	padding: 3px;
 	margin: 1px;

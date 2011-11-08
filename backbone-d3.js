@@ -11,7 +11,9 @@
           this.collection.bind('reset', this.draw);
 
           this.settings = settings || {};
-					this.div = this.settings.div || d3.select("#plot");
+					var divname = this.settings.div || "#plot";
+					this.div = d3.select(divname)
+					this.duration = this.settings.duration || 500;
 
 					this.collection.fetch();
 					// TODO: make the chart a member var of the View
@@ -62,9 +64,11 @@
 	        var w = options.w || 20;
 					var h = options.h || 80;
           var data = this.collection.plotdata();
-					var scale = h/_.max(data);
-					console.log(scale);
-					console.log(data.length);
+
+					var scale = d3.round(h/_.max(data, function(d){return d.y;}).y);
+
+					var yval = function(d){return h - scale * d.y - .5;};
+
 					var x = d3.scale.linear()
 						.domain([0, 1])
 						.range([0, w]);
@@ -83,9 +87,9 @@
 								.data(data)
 							.enter().append("svg:rect")
 								.attr("x", function(d, i) { return x(i) - .5; })
-								.attr("y", function(d) { return h - scale * y(d) - .5; })
+								.attr("y", function(d) { return yval(d) })
 								.attr("width", w)
-								.attr("height", function(d) { return scale * y(d); });
+								.attr("height", function(d) { return scale * d.y; });
 
 						chart.append("svg:line")
 							.attr("x1", 0)
@@ -100,15 +104,40 @@
 							.attr("y1", 0)
 							.attr("y2", h - .5)
 							.attr("stroke", "#000");
-					} else if (options.scrolling){
-						console.log('scrolling, yo!');
+					} else if (this.collection.scrolling) {
+						var chart = this.div.selectAll("svg");
+						var rect = chart.selectAll("rect")
+							.data(data, function(d) { return d.x; });
+
+						rect.enter().insert("svg:rect", "line")
+							.attr("x", function(d, i) { return x(i+1) - .5; })
+							.attr("y", function(d) { return yval(d) })
+							.attr("width", w)
+							.attr("height", function(d) { return scale * d.y; })
+							.transition()
+								.duration(this.duration)
+								.attr("x", function(d, i) { return x(i) - .5; });
+
+						rect.transition()
+							.duration(this.duration)
+							.attr("x", function(d, i) { return x(i) - .5; })
+							.attr("y", function(d, i) { return yval(d) })
+							.attr("height", function(d) { return scale * d.y; });
+
+						rect.exit()
+							.transition()
+								.duration(this.duration)
+								.attr("x", function(d, i) { return x(i - 1) - .5; })
+								.attr("y", function(d) { return yval(d) })
+								.attr("height", function(d) { return scale * d.y; })
+							.remove();
 					} else {
 						this.div.selectAll("rect")
 								.data(data)
 						.transition()
-							.duration(500)
-							.attr("y", function(d) { return h - scale * y(d) - .5; })
-							.attr("height", function(d) { return scale * y(d); });
+							.duration(this.duration)
+							.attr("y", function(d) { return yval(d) })
+							.attr("height", function(d) { return scale * d.y; });
 					}
         }	// ,
         	// 		caption: function(){
@@ -131,6 +160,7 @@
           _.bindAll(this);
           this.settings = settings || {};
           this.plottype = plottype || "bar";
+					this.scrolling = this.settings.scrolling || false;
           this.reset(models);
         },
         plotdata: function(){
