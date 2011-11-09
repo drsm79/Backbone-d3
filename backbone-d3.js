@@ -54,37 +54,53 @@ var PlotView = Backbone.View.extend({
 		PlotView: PlotView,
 		PieView: PlotView.extend(
 		{
+		  pieData: [],
 		  plot: function(options) {
 		    var data = this.collection.plotdata();
 		    var m = 10,
 		    r = 100,
 		    z = d3.scale.category20c();
+		    var arc = d3.svg.arc()
+          .startAngle(function(d) { return d.startAngle; })
+          .endAngle(function(d) { return d.endAngle; })
+		      .innerRadius(r / 8)
+		      .outerRadius(r);
+		    var pieLayout = d3.layout.pie();
+		    var pieData = pieLayout(data);
 		    if (options.newPlot) {
 		      var svg = this.div.selectAll("svg")
-		      .data([data])
-		      .enter().append("svg:svg")
-		        .attr("width", (r + m) * 2)
-		        .attr("height", (r + m) * 2)
-		      .append("svg:g")
-		        .attr("transform", "translate(" + (r + m) + "," + (r + m) + ")");
-		      svg.selectAll("path")
-		      .data(d3.layout.pie())
-		      .enter().append("svg:path")
-		        .attr("d", d3.svg.arc()
-		      .innerRadius(r / 8)
-		      .outerRadius(r))
-		      .style("fill",
-		      function(d, i) { return z(i); });
+		        .data([data])
+            .enter().append("svg:svg")
+              .attr("width", (r + m) * 2)
+              .attr("height", (r + m) * 2)
+            .append("svg:g")
+              .attr("transform", "translate(" + (r + m) + "," + (r + m) + ")");
+          svg.selectAll("path")
+            .data(pieData)
+            .enter().append("svg:path")
+              .attr("d", arc)
+            .style("fill",
+              function(d, i) { return z(i); });
+          this.pieData = pieData;
 		    } else {
 		      var svg = this.div.selectAll("svg");
-		      svg.data([data]);
+		      var newPieData = pieLayout(data);
+		      var that = this;
+		      _.each(newPieData, function(d, i, l) {
+	          d.oldStartAngle = that.pieData[i].startAngle;
+	          d.oldEndAngle = that.pieData[i].endAngle;
+		      });
+		      this.pieData = newPieData;
 		      var pie = svg.selectAll("path");
-		      pie.data(d3.layout.pie());
+		      pie.data(newPieData);
 		      pie.transition()
-		        .attr("d", d3.svg.arc()
-		      .innerRadius(r / 8)
-		      .outerRadius(r))
-		      .style("fill", function(d, i) { return z(i); });
+		        .duration(this.duration)
+            .attrTween("d", function(a) {
+              var i = d3.interpolate({startAngle: a.oldStartAngle, endAngle: a.oldEndAngle}, a);
+              return function(t) {
+                return arc(i(t));
+              };
+            });
 		    }
 		  }
 		}),
