@@ -1,0 +1,107 @@
+<html>
+	<head>
+	  <title>Backbone.d3 - Bar charts</title>
+
+	  <link rel="stylesheet" href="https://raw.github.com/drsm79/Backbone-d3/master/examples/style.css" type="text/css" />
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts/jquery.js" type='text/javascript'> </script>
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts/underscore-min.js" type="text/javascript"> </script>
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts/backbone.js" type="text/javascript"> </script>
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts/d3.min.js" type="text/javascript"> </script>
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts/d3.layout.min.js" type="text/javascript"> </script>
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/backbone-d3.js" type="text/javascript"> </script>
+
+    <script type="text/javascript">
+      $(function() {
+        var DataPoint = Backbone.Model.extend({
+          initialize: function(point) {
+            this.set({
+              id: point.id,
+              x: point.x,
+              y: point.y
+            });
+          }
+        });
+
+        var DataSeries = Backbone.d3.PlotCollection.extend({
+          model : DataPoint,
+          url : "bardata.json",
+          // Needed for scolling plots
+          size: 5,
+          plotdata: function(){
+            var data = [];
+            this.forEach(function(datapoint) {
+                data.push({x:datapoint.get('x'), y:datapoint.get('y')});
+              }
+            )
+            // Needed for scolling plots
+            return _.last(data, this.size);
+          },
+          fetch: function(){
+            // No op
+            console.log('fetching is a no op in this example');
+          }
+        });
+
+        var series1 = new DataSeries();
+
+        var plot1 = Backbone.d3.getView(series1, {div:'#plot1'});
+        series1.reset([
+          new DataPoint({x:1, y:6, id:1}),
+          new DataPoint({x:2, y:4, id:2}),
+          new DataPoint({x:3, y:2, id:3}),
+          new DataPoint({x:4, y:4, id:4}),
+          new DataPoint({x:5, y:6, id:5})
+        ]);
+        // evolve the dataset
+        _.each(_.range(1,6), function(i, ii, l) {
+          setTimeout(function() {
+                   m = plot1.collection.get(i);
+                   m.set({y:2*i});
+          }, i * 1000);
+        })
+
+        var series2 = new DataSeries();
+        series2.scrolling = true;
+
+        var plot2 = Backbone.d3.getView(series2, {div:'#plot2'});
+        series2.reset([
+          new DataPoint({x:1, y:5, id:1}),
+          new DataPoint({x:2, y:4, id:2}),
+          new DataPoint({x:3, y:3, id:3}),
+          new DataPoint({x:4, y:2, id:4}),
+          new DataPoint({x:5, y:1, id:5})
+        ]);
+        // evolve the dataset
+        _.each(_.range(1,6), function(i, ii, l) {
+          setTimeout(function() {
+                   plot2.collection.add(new DataPoint({x:i+5, y:i*2, id:i}));
+          }, i * 1000);
+        })
+      });
+
+    </script>
+  </head>
+  <body>
+    <a href="https://github.com/drsm79/Backbone-d3"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+    <div id="container">
+      <h1>Bar charts</h1>
+      <p>Backbone-d3 currently supports two classes of bar chart; static and
+        scrolling. They only differ in how they behave when the collection is
+        updated. Static bar charts will update in place and are good for when
+        x-axis data is fixed. Scrolling bar charts are good for time series
+        data - new data will appear on the right hand side and old will
+        "drop-off" on the left.</p>
+      <table width="100%">
+        <tr>
+          <td width="50%" align="center">
+            <h3>Static plot<div id="plot1"></div></h3>
+          </td>
+          <td width="50%" align="center">
+            <h3>Scrolling plot<div id="plot2"></div></h3>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </body>
+</html>
