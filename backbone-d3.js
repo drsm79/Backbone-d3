@@ -83,7 +83,6 @@ var PlotView = Backbone.View.extend({
 		     *  This function puts deleted segments into the data array at the right
 		     *  place.
 		     */
-		    console.log([this.settings.name, this.deleted]);
 		    _.each(this.deleted, function(d) {
 		      data.splice(d, 0, 0);
 		    });
