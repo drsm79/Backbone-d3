@@ -16,7 +16,10 @@ line { stroke: #484338; }
 #plot2 .chart rect {
 	fill: orange;
 }
-
+.footer{
+	margin-top: 5em;
+	list-style-type:square;
+}
 .chart rect {
 	font: 10px sans-serif;
 	text-align: right;
