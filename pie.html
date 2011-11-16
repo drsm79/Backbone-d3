@@ -10,52 +10,86 @@
     <script src="https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts/d3.layout.min.js" type="text/javascript"> </script>
     <script src="https://raw.github.com/drsm79/Backbone-d3/master/backbone-d3.js" type="text/javascript"> </script>
 
-		    <script type="text/javascript">
+    <script type="text/javascript">
 
-		      $(function() {
-		        var DataPoint = Backbone.Model.extend({
-		          initialize: function(value) {
-		            this.set(value);
-		          }
-		        });
+      $(function() {
+        var DataPoint = Backbone.Model.extend({
+          initialize: function(value) {
+            this.set(value);
+          }
+        });
 
-		        var DataSeries = Backbone.d3.PlotCollection.extend({
-		          model : DataPoint,
-		          url : "data",
-		          plottype: "pie",
-		          fetch: function(){
-		            // No op
-		            console.log('fetching is a no op in this example');
-		          }
-		        });
+        var DataSeries = Backbone.d3.PlotCollection.extend({
+          model : DataPoint,
+          url : "data",
+          plottype: "pie",
+          fetch: function(){
+            // No op
+            console.log('fetching is a no op in this example');
+          }
+        });
 
-		        var series = new DataSeries();
-		        var plot = Backbone.d3.getView(series, {div:'#plot1'});
-		        series.reset([new DataPoint({id: 1, value: 3}),
-		          new DataPoint({id: 2, value: 2}),
-		          new DataPoint({id: 3, value: 6}),
-		          new DataPoint({id: 4, value: 3})]);
-		        _.each(_.range(1,5), function(i, ii, l) {
-		          setTimeout(function() {
-		             var m = plot.collection.get(i);
-		             m.set({value:4*i});
-		          }, i * 1000);
-		        })
-		      });
-		    </script>
-		  </head>
-		  <body>
-		    <div id="container">
-		      <h1>Pie charts</h1>
-		      <p>Backbone-d3 currently supports simple pie charts. Weird things
-		        will happen when they update, but they'll look right in the end.</p>
-		      <table width="100%">
-		        <tr>
-		          <td width="50%" align="center">
-		            <h3>Static plot<div id="plot1"></div></h3>
-		          </td>
-		        </tr>
-		      </table>
-		    </div>
-		  </body>
-		</html>
+        var series = new DataSeries();
+        var plot = Backbone.d3.getView(series, {
+          div:'#plot1',
+          name: 'PLOT1',
+          radius: 85
+        });
+        series.reset([new DataPoint({id: 1, value: 2}),
+          new DataPoint({id: 2, value: 1}),
+          new DataPoint({id: 3, value: 1}),
+          new DataPoint({id: 4, value: 2})]);
+        var newValues = [1, 2, 2, 1];
+        _.each(_.range(1,5), function(i, ii, l) {
+          setTimeout(function() {
+             var m = plot.collection.get(i);
+             m.set({value: newValues[ii]});
+          }, i * 1000);
+        })
+
+        var dynamicSeries = new DataSeries();
+        var dynamicPlot = Backbone.d3.getView(dynamicSeries, {
+          div:'#plot2',
+          name: 'PLOT2',
+          radius: 85
+        });
+        dynamicSeries.reset([new DataPoint({id: 1, value: 1}),
+          new DataPoint({id: 2, value: 2})]);
+        setTimeout(function() {
+          dynamicSeries.add(new DataPoint({id: 3, value: 4}));
+        }, 1000);
+        setTimeout(function() {
+          dynamicSeries.add(new DataPoint({id: 4, value: 2}));
+        }, 2000);
+        setTimeout(function() {
+          dynamicSeries.remove(3);
+        }, 3000);
+        setTimeout(function() {
+          dynamicSeries.add(new DataPoint({id: 5, value: 1}));
+        }, 4000);
+      });
+    </script>
+  </head>
+  <body>
+    <div id="container">
+      <h1>Pie charts</h1>
+      <p>Backbone-d3 currently supports simple pie charts with transitions.
+         Changing values in a collection causes the pie chart to update to the
+         new ratios. Adding a value adds a new segment to the pie chart, and
+         removing a value removes that segment.</p>
+      <table width="100%">
+        <tr>
+          <td width="50%" align="center">
+            <h3>Static plot<div id="plot1"></div></h3>
+          </td>
+          <td width="50%" align="center">
+            <h3>Dynamic plot<div id="plot2"></div></h3>
+          </td>
+        </tr>
+      </table>
+	    <div class="footer">
+	      <p><a href="index.html">Index</a></p>
+	    </div>
+    </div>
+  </body>
+</html>
