@@ -182,7 +182,7 @@ var PlotView = Backbone.View.extend({
 		    var h = options.h || 80;
 		    var data = this.collection.plotdata();
 
-		    var scale = d3.round(h / _.max(data, function(d) { return d.y; }).y);
+		    var scale = h / _.max(data, function(d) { return d.y; }).y;
 
 		    var yval = function(d) { return h - scale * d.y - .5; };
 
