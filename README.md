@@ -25,6 +25,7 @@ a d3 transformation, updating the plot in place with your new data. Tasty!
 
 ## The plot views
 Each type of visualisation (should be careful about refering to them as plots...) is a Backbone
-view. A helper factory function (Backbone.d3.getView) take a PlotCollection (and optoinal settings
-object) and returns the appropriate view object. if you want to create more interesting visualizations
-you'll be writing views. 
+view. If you want to create more interesting visualizations you'll be writing views.
+
+A helper factory function (Backbone.d3.getView) takes a PlotCollection (and optional settings
+object) and returns the appropriate view object for a few canned visualisation types. 
