@@ -1,4 +1,12 @@
 # backbone-d3
+With backbone-d3 we aim to provide a simple interface to visualise with d3 dynamic data held in 
+backbone collections. The simple visualisations provided (pie, bar, line) are as much for demonstration
+or testing as for wider use. We've tried to connect two great packages without putting too much 
+between them. 
+
+Hopefully this means you can quickly create some basic plots of your data or get into more 
+sophisticated visualisations without having to fight with asynchronous JavaScript or a lot 
+Of wrapper code
 
 ## PlotCollection
 Any collection of backbone models can be used by the plotting view. The collection containing 
@@ -18,4 +26,5 @@ a d3 transformation, updating the plot in place with your new data. Tasty!
 ## The plot views
 Each type of visualisation (should be careful about refering to them as plots...) is a Backbone
 view. A helper factory function (Backbone.d3.getView) take a PlotCollection (and optoinal settings
-object) and returns the appropriate view object. 
+object) and returns the appropriate view object. if you want to create more interesting visualizations
+you'll be writing views. 
