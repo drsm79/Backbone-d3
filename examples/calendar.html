@@ -3,41 +3,145 @@
 	  <title>Backbone.d3 - Calendar</title>
 
 	  <link rel="stylesheet" href="style.css" type="text/css" />
+	  <link rel="stylesheet" href="colorbrewer.css" type="text/css" />
+	  <style>
+	  #chart {
+      font: 10px sans-serif;
+      shape-rendering: crispEdges;
+    }
+
+    .day {
+      fill: #fff;
+      stroke: #ccc;
+    }
+
+    .month {
+      fill: none;
+      stroke: #000;
+      stroke-width: 2px;
+    }
+    </style>
     <script src="scripts/jquery.js" type='text/javascript'> </script>
     <script src="scripts/underscore-min.js" type="text/javascript"> </script>
     <script src="scripts/backbone.js" type="text/javascript"> </script>
     <script src="scripts/d3.min.js" type="text/javascript"> </script>
+    <script src="scripts/d3.time.min.js" type="text/javascript"> </script>
     <script src="scripts/d3.layout.min.js" type="text/javascript"> </script>
+    <script src="scripts/Markdown.Converter.js" type="text/javascript"> </script>
+    <script src="scripts/Markdown.Sanitizer.js" type="text/javascript"> </script>
+
     <script src="../backbone-d3.js" type="text/javascript"> </script>
+
     <script type="text/javascript">
       $(function() {
-        var DataPoint = Backbone.Model.extend({
-          initialize: function(event) {
+        var CalDataPoint = Backbone.Model.extend({
+          initialize: function(data) {
             this.set({
-              date: event.date,
-              count: event.count
+              id: data.date,
+              date: data.date,
+              count: data.count
             });
           }
         });
 
-        var DataSeries = Backbone.d3.PlotCollection.extend({
-          model : DataPoint,
-          url : "bardata.json",
-          // Needed for scolling plots
-          size: 5,
+        var CalData = Backbone.d3.PlotCollection.extend({
+          model : Backbone.Model,
+          url : "calendar.json",
+          plottype: "calendar",
+          // TODO: add a start date/end date
           plotdata: function(){
+            // return percent safety
             var data = [];
+            var max = this.max(function(d){return d.get("count");}).get("count");
             this.forEach(function(datapoint) {
-                data.push({x:datapoint.get('date'), y:datapoint.get('count')});
+                data.push({date:datapoint.get('date'), count:1 - parseFloat(datapoint.get('count'))/max});
               }
             )
-            // Needed for scolling plots
-            return _.last(data, this.size);
-          }
+            return data;
+          },
+    			success: function( result ) {
+  					var models = [];
+  					_.each( result, function( row ) {
+							models.push( row.value );
+  					});
+  					if ( models.length == 0 ) { models = null }
+  					return models;
+  				}
         });
 
-        var plot1 = Backbone.d3.getView(series1, {div:'#calendar'});
+        var CalendarVis = Backbone.d3.PlotView.extend({
+          day: d3.time.format("%w"),
+          week: d3.time.format("%U"),
+          percent: d3.format(".1%"),
+          format: d3.time.format("%Y-%m-%d"),
+          m: [19, 20, 20, 19], // top right bottom left margin
+          gw: 700, // width
+          gh: 136, // height
+          z: 10, // cell size
+          plot: function(options) {
+            var that = this;
+            var w = 700 - this.m[1] - this.m[3], // width
+                h = 136 - this.m[0] - this.m[2];
+            var color = d3.scale.quantize()
+                .domain([0, 1])
+                .range(d3.range(9));
 
+            var svg = this.div.selectAll("svg")
+                .data(d3.range(1985, 2011))
+              .enter().append("svg:svg")
+                .attr("width", w + this.m[1] + this.m[3])
+                .attr("height", h + this.m[0] + this.m[2])
+                .attr("class", "RdYlGn") // Colour pallet.
+              .append("svg:g")
+                .attr("transform",
+                  "translate(" + (this.m[3] + (w - this.z * 53) / 2) + "," + (this.m[0] + (h - this.z * 7) / 2) + ")");
+
+            svg.append("svg:text")
+                .attr("transform", "translate(-6," + this.z * 3.5 + ")rotate(-90)")
+                .attr("text-anchor", "middle")
+                .text(String);
+
+            var rect = svg.selectAll("rect.day")
+                .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+              .enter().append("svg:rect")
+                .attr("class", "day")
+                .attr("width", this.z)
+                .attr("height", this.z)
+                .attr("x", function(d) { return that.week(d) * that.z; })
+                .attr("y", function(d) { return that.day(d) * that.z; });
+
+            svg.selectAll("path.month")
+                .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+              .enter().append("svg:path")
+                .attr("class", "month")
+                .attr("d", that.monthPath);
+
+            var data = d3.nest()
+                  .key(function(d) { return d.date; })
+                  .rollup(function(d) { return d[0].count; })
+                  .map(this.collection.plotdata());
+
+            rect.attr("class", function(d) {
+              return "day q" + color(data[that.format(d)]) + "-9";
+            })
+              .append("svg:title")
+                .text(function(d) {
+                  return (d = that.format(d)) + (d in data ? ": " + that.percent(data[d]) : "");
+                });
+          },
+          monthPath: function(t0) {
+            var t1 = new Date(t0.getUTCFullYear(), t0.getUTCMonth() + 1, 0),
+                d0 = +this.day(t0), w0 = +this.week(t0),
+                d1 = +this.day(t1), w1 = +this.week(t1);
+            return "M" + (w0 + 1) * this.z + "," + d0 * this.z
+                + "H" + w0 * this.z + "V" + 7 * this.z
+                + "H" + w1 * this.z + "V" + (d1 + 1) * this.z
+                + "H" + (w1 + 1) * this.z + "V" + 0
+                + "H" + (w0 + 1) * this.z + "Z";
+          }
+        });
+        var series1 = new CalData();
+        var cal = new CalendarVis(series1, {div:'#calendar'});
 			});
 		</script>
 	  </head>
@@ -48,7 +152,8 @@
 <a href='http://data.gov/'>data.gov</a> that I got from Mike Miller of
 <a href="http://blog.cloudant.com/mapreduce-from-the-basics-to-the-actually-useful/">Cloudant</a>.
 I munged it up so it's just date:number of crashes. The data is unsorted. See
-<a href="calendar.json">calendar.json</a> for the details.</p>
+<a href="calendar.json">calendar.json</a> for the details. Days are coloured by
+the ratio of crashes to total number of crashes in the data set.</p>
 	      <div id="calendar"></div>
 	      <div class="footer">
 		      <p><a href="index.html">Index</a></p>

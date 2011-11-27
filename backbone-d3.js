@@ -10,9 +10,10 @@ var PlotView = Backbone.View.extend({
     this.settings = settings || {};
     var divname = this.settings.div || "#plot";
     this.div = d3.select(divname)
+    // time taken in transitions
     this.duration = this.settings.duration || 500;
-
     this.collection.fetch();
+
     // TODO: make the chart a member var of the View
     // for easier access/fine grained control
   },
@@ -22,7 +23,7 @@ var PlotView = Backbone.View.extend({
       this.plot({
         newPlot: true
       });
-      //this.caption();
+      this.caption();
     }
   },
   redraw: function() {
@@ -34,19 +35,23 @@ var PlotView = Backbone.View.extend({
   plot: function() {
 		if (console){	console.log("Not implemented in base class"); }
     return;
-  }  // ,
-    // 		caption: function(){
-    // 			if (this.collection.caption){
-    // 				var caption;
-    // 				if (Markdown) {
-    // 					var converter = Markdown.getSanitizingConverter();
-    // 					caption = converter.makeHtml(this.collection.caption);
-    // 				} else {
-    // 					caption = this.collection.caption;
-    // 				}
-    // 				d3.select("#plot").write(caption);
-    // 			}
-    // 		}
+  },
+  caption: function(){
+    if (this.settings.caption || this.collection.caption){
+      var caption = this.settings.caption || this.collection.caption;
+      if (typeof Markdown == "object") {
+        try {
+          var converter = Markdown.getSanitizingConverter();
+          caption = converter.makeHtml(caption);
+        } catch (err) {
+          // do nothing
+          var pass = true;
+        };
+      }
+      var captiondiv = $('<div/>', {class: "caption", html: caption});
+      $(this.settings.div).append(captiondiv);
+    }
+  }
 });
 
 (function() {
@@ -277,19 +282,18 @@ var PlotView = Backbone.View.extend({
 		  }
 		}),
 		PlotCollection: Backbone.Collection.extend({
-      initialize: function(models, plottype, settings) {
+      initialize: function(models, settings) {
         _.bindAll(this);
         this.settings = settings || {};
-        this.plottype = plottype || this.plottype || "bar";
-        this.scrolling = this.settings.scrolling || false;
-        this.reset(models);
+        this.plottype = this.settings.plottype || this.plottype || "bar";
+        this.caption = this.settings.caption || false;
+        if (models) this.reset(models, {silent: true});
       },
       plotdata: function() {
         var data = [];
         this.forEach(function(datapoint) {
           data.push(datapoint.get('value'));
-        }
-        )
+        })
         return data;
       }
     }),

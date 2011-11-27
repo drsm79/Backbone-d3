@@ -16,9 +16,22 @@ line { stroke: #484338; }
 #plot2 .chart rect {
 	fill: orange;
 }
+#plot3 .chart rect {
+	fill: green;
+}
+#plot4 .chart rect {
+	fill: tomato;
+}
 .footer{
 	margin-top: 5em;
 	list-style-type:square;
+}
+div.caption{
+  font-family: Helvetica Neue, Helvetica, Arial;
+	font-size: 9pt;
+}
+div.caption strong{
+	font-weight: 700;
 }
 .chart rect {
 	font: 10px sans-serif;
