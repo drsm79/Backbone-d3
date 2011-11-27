@@ -13,6 +13,6 @@ couchapp_load([
   "d3.layout.min.js",
   "Markdown.Converter.js",
   "Markdown.Sanitizer.js"
-], "https://raw.github.com/drsm79/Backbone-d3/master/scripts");
+], "https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts");
 
 couchapp_load(["backbone-d3.js"], "https://raw.github.com/drsm79/Backbone-d3/master");
