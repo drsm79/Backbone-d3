@@ -212,7 +212,11 @@ var PlotView = Backbone.View.extend({
           }
         )
         // Needed for scolling plots
-        return _.last(data, this.size);
+        if (data.length > this.size){
+          return _.last(data, this.size);
+        } else {
+          return data;
+        }
       },
 		  plot: function(options) {
 		    // Copy these data to avoid closure issues below
