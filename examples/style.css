@@ -79,3 +79,26 @@ h6 {
   margin: 0 auto;
   width: 700px;
 }
+hr {
+  width: 50%;
+  color: #484338;
+  background-color: #484338;
+  border: 0;
+  height: 1px;
+}
+blockquote {
+  quotes: "\201C" "\201D";
+  border: 1px dotted #cecece;
+  padding: 0.5em;
+  font-family: Helvetica Neue, Helvetica, Arial;
+  font-style:italic;
+}
+blockquote:before {
+  content: open-quote;
+  font-weight: bold;
+  font-size: 5em;
+  line-height: 1em;
+  font-family: Helvetica Neue, Helvetica, Arial;
+  float: left;
+  margin-right:0.2em;
+}
