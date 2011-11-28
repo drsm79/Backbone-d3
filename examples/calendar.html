@@ -40,16 +40,6 @@
           url : "calendar.json",
           plottype: "calendar",
           // TODO: add a start date/end date
-          plotdata: function(){
-            // return percent safety
-            var data = [];
-            var max = this.max(function(d){return d.get("count");}).get("count");
-            this.forEach(function(datapoint) {
-                data.push({date:datapoint.get('date'), count:1 - parseFloat(datapoint.get('count'))/max});
-              }
-            )
-            return data;
-          },
     			success: function( result ) {
   					var models = [];
   					_.each( result, function( row ) {
@@ -110,7 +100,7 @@
             var data = d3.nest()
                   .key(function(d) { return d.date; })
                   .rollup(function(d) { return d[0].count; })
-                  .map(this.collection.plotdata());
+                  .map(this.plotdata());
 
             rect.attr("class", function(d) {
               return "day q" + color(data[that.format(d)]) + "-9";
@@ -119,6 +109,16 @@
                 .text(function(d) {
                   return (d = that.format(d)) + (d in data ? ": " + that.percent(data[d]) : "");
                 });
+          },
+          plotdata: function(){
+            // return percent safety
+            var data = [];
+            var max = this.collection.max(function(d){return d.get("count");}).get("count");
+            this.collection.forEach(function(datapoint) {
+                data.push({date:datapoint.get('date'), count:1 - parseFloat(datapoint.get('count'))/max});
+              }
+            )
+            return data;
           },
           monthPath: function(t0) {
             var t1 = new Date(t0.getUTCFullYear(), t0.getUTCMonth() + 1, 0),

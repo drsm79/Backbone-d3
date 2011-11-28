@@ -22,16 +22,6 @@
           model : DataPoint,
           url : "bardata.json",
           // Needed for scolling plots
-          size: 5,
-          plotdata: function(){
-            var data = [];
-            this.forEach(function(datapoint) {
-                data.push({x:datapoint.get('x'), y:datapoint.get('y')});
-              }
-            )
-            // Needed for scolling plots
-            return _.last(data, this.size);
-          },
           fetch: function(){
             // No op
             console.log('fetching is a no op in this example');

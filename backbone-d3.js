@@ -17,9 +17,16 @@ var PlotView = Backbone.View.extend({
     // TODO: make the chart a member var of the View
     // for easier access/fine grained control
   },
+  plotdata: function() {
+    var data = [];
+    this.collection.forEach(function(datapoint) {
+      data.push(datapoint.get('value'));
+    })
+    return data;
+  },
   draw: function() {
     // Draw the plot
-    if (this.collection.plotdata().length > 0) {
+    if (this.plotdata().length > 0) {
       this.plot({
         newPlot: true
       });
@@ -103,7 +110,7 @@ var PlotView = Backbone.View.extend({
 		      endAngle: 2 * Math.PI
 		    });
 		    this.modelIds.push(model.id);
-		    var data = this.addDeletedSegments(this.collection.plotdata());
+		    var data = this.addDeletedSegments(this.plotdata());
 		    this.div.selectAll("svg").remove();
 		    this.pieData = this.drawPie({pieData: this.pieData, data: data});
 		    this.redraw();
@@ -168,7 +175,7 @@ var PlotView = Backbone.View.extend({
         return newPieData;
 		  },
 		  plot: function(options) {
-	      var data = this.addDeletedSegments(this.collection.plotdata());
+	      var data = this.addDeletedSegments(this.plotdata());
 	      if (options.newPlot) {
 		      this.pieData = this.drawPie({data: data});
           this.modelIds = this.collection.map(function(model) {
@@ -196,13 +203,22 @@ var PlotView = Backbone.View.extend({
         //          .domain([0, 100])
         //          .rangeRound([0, this.h]);
         this.scrolling = settings.scrolling || false;
-
+        this.size = settings.size || 5;
+      },
+      plotdata: function(){
+        var data = [];
+        this.collection.forEach(function(datapoint) {
+            data.push({x:datapoint.get('x'), y:datapoint.get('y')});
+          }
+        )
+        // Needed for scolling plots
+        return _.last(data, this.size);
       },
 		  plot: function(options) {
 		    // Copy these data to avoid closure issues below
 		    var w = this.w;
 		    var h = this.h;
-		    var data = this.collection.plotdata();
+		    var data = this.plotdata();
 
 		    var scale = h / _.max(data, function(d) { return d.y; }).y;
 
@@ -288,13 +304,6 @@ var PlotView = Backbone.View.extend({
         this.plottype = this.settings.plottype || this.plottype || "bar";
         this.caption = this.settings.caption || false;
         if (models) this.reset(models, {silent: true});
-      },
-      plotdata: function() {
-        var data = [];
-        this.forEach(function(datapoint) {
-          data.push(datapoint.get('value'));
-        })
-        return data;
       }
     }),
     getView: function(collection, settings) {
