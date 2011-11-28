@@ -28,7 +28,7 @@
         var CalDataPoint = Backbone.Model.extend({
           initialize: function(data) {
             this.set({
-              id: data.date,
+//              id: data.date,
               date: data.date,
               count: data.count
             });
@@ -40,14 +40,14 @@
           url : "calendar.json",
           plottype: "calendar",
           // TODO: add a start date/end date
-    			success: function( result ) {
-  					var models = [];
-  					_.each( result, function( row ) {
-							models.push( row.value );
-  					});
-  					if ( models.length == 0 ) { models = null }
-  					return models;
-  				}
+    			success: function( result, foo ) {
+            var models = [];
+            _.each( result, function( row ) {
+             models.push( new CalDataPoint(row.value) );
+            });
+            if ( models.length == 0 ) { models = null }
+            return models;
+          }
         });
 
         var CalendarVis = Backbone.d3.PlotView.extend({
