@@ -1,0 +1,133 @@
+<html>
+	<head>
+	  <title>Backbone.d3 - Scatter charts</title>
+
+	  <link rel="stylesheet" href="style.css" type="text/css" />
+	  <style>
+	  circle{
+	    fill:blue;
+	  }
+	  #line{
+	    height: 200px;
+	  }
+	  </style>
+	  <script src="loader.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    $(function (){
+      var DataPoint = Backbone.Model.extend({
+        initialize: function(point) {
+          this.set({
+            x: point.x,
+            y: point.y
+          });
+        }
+      });
+
+      var DataSeries = Backbone.d3.PlotCollection.extend({
+        model : DataPoint,
+        url : "bardata.json",
+        // Needed for scolling plots
+        fetch: function(){
+          // No op
+          console.log('fetching is a no op in this example');
+        }
+      });
+
+      var series1 = new DataSeries();
+
+      var ScatterPlot = Backbone.d3.PlotView.extend({
+        initialize: function(collection, settings) {
+  		    PlotView.prototype.initialize.apply(this, [collection, settings]);
+
+    		  this.w = settings.w || 200;
+          this.h = settings.h || 200;
+          this.size = 20;
+        },
+        plot: function(options){
+          var w = this.w;
+  		    var h = this.h;
+  		    var data = this.plotdata();
+
+  		    var x = d3.scale.linear()
+  		      .domain([0, 20])
+  		      .range([0, w]);
+
+  		    var y = d3.scale.linear()
+  		      .domain([-1, 1])
+  		      .rangeRound([10, h - 10]);
+
+  		    // Draw axes & label
+
+  		    // Scatter
+  		    var chart = null;
+          if (options.newPlot) {
+            chart = this.div.append("svg:svg");
+            chart.selectAll("circle")
+              .data(data).enter().append("svg:circle")
+              .attr("cx", function(d) { return x(d.x) })
+              .attr("cy", function(d) { return y(d.y) })
+              .attr("r", 0)
+            .transition()
+        		  .duration(this.duration)
+        		    .attr("r", 5);
+          } else {
+            chart = this.div.selectAll("svg");
+            var circle = chart.selectAll("circle").data(data);
+            circle.enter().insert("svg:circle", "circle")
+                .attr("cx", function(d, i) { return x(d.x) })
+                .attr("cy", function(d) { return y(d.y) })
+                .attr("id", function(d) { return d.x + '-' + d.y })
+                .attr("r", 0)
+              .transition()
+      		      .duration(this.duration)
+      		        .attr("r", 5);
+          }
+  		    // TODO: label points
+  		    // TODO: different shapes
+  		    // TODO: support multiple datasets in one scat
+
+        },
+        plotdata: function(){
+          var data = [];
+          this.collection.forEach(function(datapoint) {
+              data.push({x:datapoint.get('x'), y:datapoint.get('y')});
+            }
+          )
+          // Needed for scolling plots
+          if (data.length > this.size) {
+            return _.last(data, this.size);
+          } else {
+            return data;
+          }
+        }
+      })
+
+      var plot1 = new ScatterPlot(series1, {div:'#line'});
+      plot1.collection.reset([new DataPoint({x:0, y:0})]);
+
+       _.each(_.range(1,20), function(i, ii, l) {
+          setTimeout(function() {
+            plot1.collection.add(new DataPoint({y:Math.sin(i/10 * Math.PI), x: i}));
+          }, 1 + Math.random() * i * 100);
+        })
+    });
+    </script>
+  </head>
+  <body>
+    <div id="container">
+      <h1>Scatter charts</h1>
+      <p>Points in a scatter plot have no explicit relation to other points in
+         the visualisation. Points can appear out of order, but if they are
+         outside of the domain of the plot they are dropped (e.g. the domain
+         does not transition with regards to the data). However, existing data
+         is updated, and if it, like, leaves the domain it is, like, dropped.</p>
+      <p>Scatter plots are, like, totally appropriate for visualising data and,
+         like, identifying trends/patterns in unordered datasets.</p>
+      <hr/>
+      <div id="line"></div>
+	    <div class="footer">
+	      <p><a href="index.html">Index</a></p>
+	    </div>
+    </div>
+  </body>
+</html>
