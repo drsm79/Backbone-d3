@@ -303,7 +303,6 @@ var PlotView = Backbone.View.extend({
 		}),
 		PlotCollection: Backbone.Collection.extend({
       initialize: function(models, settings) {
-        _.bindAll(this);
         this.settings = settings || {};
         this.plottype = this.settings.plottype || this.plottype || "bar";
         this.caption = this.settings.caption || false;
