@@ -28,7 +28,7 @@
         var CalDataPoint = Backbone.Model.extend({
           initialize: function(data) {
             this.set({
-              id: data.date,
+//              id: data.date,
               date: data.date,
               count: data.count
             });
@@ -40,24 +40,14 @@
           url : "calendar.json",
           plottype: "calendar",
           // TODO: add a start date/end date
-          plotdata: function(){
-            // return percent safety
-            var data = [];
-            var max = this.max(function(d){return d.get("count");}).get("count");
-            this.forEach(function(datapoint) {
-                data.push({date:datapoint.get('date'), count:1 - parseFloat(datapoint.get('count'))/max});
-              }
-            )
-            return data;
-          },
-    			success: function( result ) {
-  					var models = [];
-  					_.each( result, function( row ) {
-							models.push( row.value );
-  					});
-  					if ( models.length == 0 ) { models = null }
-  					return models;
-  				}
+    			success: function( result, foo ) {
+            var models = [];
+            _.each( result, function( row ) {
+             models.push( new CalDataPoint(row.value) );
+            });
+            if ( models.length == 0 ) { models = null }
+            return models;
+          }
         });
 
         var CalendarVis = Backbone.d3.PlotView.extend({
@@ -110,7 +100,7 @@
             var data = d3.nest()
                   .key(function(d) { return d.date; })
                   .rollup(function(d) { return d[0].count; })
-                  .map(this.collection.plotdata());
+                  .map(this.plotdata());
 
             rect.attr("class", function(d) {
               return "day q" + color(data[that.format(d)]) + "-9";
@@ -119,6 +109,16 @@
                 .text(function(d) {
                   return (d = that.format(d)) + (d in data ? ": " + that.percent(data[d]) : "");
                 });
+          },
+          plotdata: function(){
+            // return percent safety
+            var data = [];
+            var max = this.collection.max(function(d){return d.get("count");}).get("count");
+            this.collection.forEach(function(datapoint) {
+                data.push({date:datapoint.get('date'), count:1 - parseFloat(datapoint.get('count'))/max});
+              }
+            )
+            return data;
           },
           monthPath: function(t0) {
             var t1 = new Date(t0.getUTCFullYear(), t0.getUTCMonth() + 1, 0),
@@ -139,12 +139,15 @@
 	  <body>
 	    <div id="container">
 	      <h1>Calendar</h1>
-	      <p>The data used here is summarised FAA plane crash data from
-<a href='http://data.gov/'>data.gov</a> that I got from Mike Miller of
-<a href="http://blog.cloudant.com/mapreduce-from-the-basics-to-the-actually-useful/">Cloudant</a>.
-I munged it up so it's just date:number of crashes. The data is unsorted. See
-<a href="calendar.json">calendar.json</a> for the details. Days are coloured by
-the ratio of crashes to total number of crashes in the data set.</p>
+	      <p>This is a port of the <a href="http://mbostock.github.com/d3/ex/calendar.html">calendar
+	      example</a> from the d3 pages. The data used here is summarised FAA plane crash data from
+        <a href='http://data.gov/'>data.gov</a> that I got from Mike Miller of
+        <a href="http://blog.cloudant.com/mapreduce-from-the-basics-to-the-actually-useful/">Cloudant</a>.
+        I munged it up so it's just date:number of crashes. The data is unsorted. See
+        <a href="calendar.json">calendar.json</a> for the details. Days are coloured by
+        the ratio of crashes to total number of crashes in the data set.</p>
+        <p>Currently broken in Safari - patches welcome.</p>
+        <hr/>
 	      <div id="calendar"></div>
 	      <div class="footer">
 		      <p><a href="index.html">Index</a></p>
