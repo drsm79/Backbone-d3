@@ -5,7 +5,7 @@
 	  <link rel="stylesheet" href="style.css" type="text/css" />
 
     <script src="loader.js" type="text/javascript"></script>
-
+    <script src="../visualisations/pie.js" type="text/javascript"></script>
     <script type="text/javascript">
 
       $(function() {
@@ -26,11 +26,12 @@
         });
 
         var series = new DataSeries();
-        var plot = Backbone.d3.getView(series, {
+        var plot = new Backbone.d3.Canned.Pie.View(series, {
           div:'#plot1',
           name: 'PLOT1',
           radius: 85
         });
+
         series.reset([new DataPoint({id: 1, value: 2}),
           new DataPoint({id: 2, value: 1}),
           new DataPoint({id: 3, value: 1}),
@@ -44,7 +45,7 @@
         })
 
         var dynamicSeries = new DataSeries();
-        var dynamicPlot = Backbone.d3.getView(dynamicSeries, {
+        var dynamicPlot = new Backbone.d3.Canned.Pie.View(dynamicSeries, {
           div:'#plot2',
           name: 'PLOT2',
           radius: 85
@@ -77,15 +78,22 @@
       <table width="100%">
         <tr>
           <td width="50%" align="center">
-            <h3>Static plot<div id="plot1"></div></h3>
+            <h3>Fixed length series<div id="plot1"></div></h3>
           </td>
           <td width="50%" align="center">
-            <h3>Dynamic plot<div id="plot2"></div></h3>
+            <h3>Variable length series<div id="plot2"></div></h3>
           </td>
         </tr>
       </table>
 	    <div class="footer">
-	      <p><a href="index.html">Index</a></p>
+	      <p>
+	        <a href="index.html">Index</a> |
+	        <a href="bar.html">Bar</a> |
+	        <a href="calendar.html">Calendar</a> |
+	        <a href="line.html">Line</a> |
+	        <a href="pie.html">Pie</a> |
+	        <a href="scatter.html">Scatter</a>
+	      </p>
 	    </div>
     </div>
   </body>
