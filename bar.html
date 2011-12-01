@@ -5,7 +5,7 @@
 	  <link rel="stylesheet" href="style.css" type="text/css" />
 
     <script src="loader.js" type="text/javascript"></script>
-
+    <script src="https://raw.github.com/drsm79/Backbone-d3/master/visualisations/bar.js" type="text/javascript"></script>
     <script type="text/javascript">
       $(function() {
         var DataPoint = Backbone.Model.extend({
@@ -29,8 +29,8 @@
         });
 
         var series1 = new DataSeries();
+        var plot1 = new Backbone.d3.Canned.Bar.View(series1, {div:'#plot1'});
 
-        var plot1 = Backbone.d3.getView(series1, {div:'#plot1'});
         series1.reset([
           new DataPoint({x:1, y:6, id:1}),
           new DataPoint({x:2, y:4, id:2}),
@@ -48,7 +48,7 @@
 
         var series2 = new DataSeries();
 
-        var plot2 = Backbone.d3.getView(series2, {div:'#plot2', scrolling:true});
+        var plot2 = new Backbone.d3.Canned.Bar.View(series2, {div:'#plot2', scrolling:true});
         series2.reset([
           new DataPoint({x:1, y:5, id:1}),
           new DataPoint({x:2, y:4, id:2}),
@@ -65,7 +65,7 @@
 
         var series3 = new DataSeries();
         var caption = "**figure 3:** caption on the view using some markdown to describe this *sweet plot*, yo";
-        var plot3 = Backbone.d3.getView(series3, {div:'#plot3', scrolling:true, caption:caption});
+        var plot3 = new Backbone.d3.Canned.Bar.View(series3, {div:'#plot3', scrolling:true, caption:caption});
         series3.reset([
           new DataPoint({x:1, y:5, id:1}),
           new DataPoint({x:2, y:4, id:2}),
@@ -82,7 +82,7 @@
 
         var caption = "**figure 4:** caption on the collection using some markdown to describe this *sweet plot*, yo";
         var series4 = new DataSeries([], {caption:caption});
-        var plot4 = Backbone.d3.getView(series4, {div:'#plot4', scrolling:true});
+        var plot4 = new Backbone.d3.Canned.Bar.View(series4, {div:'#plot4', scrolling:true});
         series4.reset([
           new DataPoint({x:1, y:5, id:1}),
           new DataPoint({x:2, y:4, id:2}),
@@ -141,7 +141,14 @@
         </tr>
       </table>
 	    <div class="footer">
-	      <p><a href="index.html">Index</a></p>
+	      <p>
+	        <a href="index.html">Index</a> |
+	        <a href="bar.html">Bar</a> |
+	        <a href="calendar.html">Calendar</a> |
+	        <a href="line.html">Line</a> |
+	        <a href="pie.html">Pie</a> |
+	        <a href="scatter.html">Scatter</a>
+	      </p>
 	    </div>
     </div>
   </body>
