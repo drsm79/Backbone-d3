@@ -62,6 +62,14 @@
         }
       }
     }),
+    PlotCollection: Backbone.Collection.extend({
+      initialize: function(models, settings) {
+        this.settings = settings || {};
+        this.plottype = this.settings.plottype || this.plottype || "bar";
+        this.caption = this.settings.caption || false;
+        if (models) this.reset(models, {silent: true});
+      }
+    }),
     Canned: {}
   }
 })();
