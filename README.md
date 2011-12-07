@@ -9,6 +9,9 @@ Hopefully this means you can quickly create some basic plots of your data or
 get into more sophisticated visualisations without having to fight with
 asynchronous JavaScript or a lot of wrapper code.
 
+Examples from the repo are also hosted on http://drsm79.github.com/Backbone-d3/
+so you can see the library in action.
+
 ## PlotCollection
 Any backbone collection of any backbone model can be used by the plotting view.
 The collection containing them can have a caption variable set which will be
