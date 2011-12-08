@@ -22,6 +22,15 @@ line { stroke: #484338; }
 #plot4 .chart rect {
 	fill: tomato;
 }
+.chartcontainer{
+  background-color: #ffffff;
+  margin:1em;
+  padding:1em;
+  border: 1px solid #aaa;
+  -moz-box-shadow: 5px 5px 5px #ccc;
+  -webkit-box-shadow: 5px 5px 5px #ccc;
+  box-shadow: 5px 5px 5px #ccc;
+}
 .footer{
 	margin-top: 5em;
 	list-style-type:square;
