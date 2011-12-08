@@ -31,7 +31,7 @@ line { stroke: #484338; }
   -webkit-box-shadow: 5px 5px 5px #ccc;
   box-shadow: 5px 5px 5px #ccc;
 }
-.footer{
+#footer{
 	margin-top: 5em;
 	list-style-type:square;
 }

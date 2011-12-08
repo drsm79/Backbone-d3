@@ -1,10 +1,10 @@
-function couchapp_load(scripts, base) {
+function bbd3_load(scripts, base) {
   for (var i=0; i < scripts.length; i++) {
-    document.write('<script src="'+ base + '/' + scripts[i]+'"><\/script>')
+    document.write('<script src="'+ base + scripts[i]+'"><\/script>')
   };
 };
 
-couchapp_load([
+bbd3_load([
   "jquery.js",
   "underscore-min.js",
   "backbone.js",
@@ -13,6 +13,7 @@ couchapp_load([
   "d3.layout.min.js",
   "Markdown.Converter.js",
   "Markdown.Sanitizer.js"
-], "scripts");
+], "scripts/");
 
-couchapp_load(["backbone-d3.js"], "..");
+bbd3_load(["backbone-d3.js"], "../");
+bbd3_load(["footer.js"], "");
