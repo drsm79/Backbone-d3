@@ -13,7 +13,7 @@ couchapp_load([
   "d3.layout.min.js",
   "Markdown.Converter.js",
   "Markdown.Sanitizer.js"
-], "https://raw.github.com/drsm79/Backbone-d3/master/examples/scripts");
+], "https://rawgithub.com/drsm79/Backbone-d3/master/examples/scripts");
 
-couchapp_load(["backbone-d3.js"], "https://raw.github.com/drsm79/Backbone-d3/master");
+couchapp_load(["backbone-d3.js"], "https://rawgithub.com/drsm79/Backbone-d3/master");
 document.write('<a href="https://github.com/drsm79/Backbone-d3"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>');
